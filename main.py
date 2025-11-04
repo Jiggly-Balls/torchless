@@ -1,6 +1,8 @@
 import pygame
 from game_state import StateManager
 
+from data.constants import FPS, SCREEN_RESOLUTION
+
 __version__ = "0.1.0"
 
 pygame.init()
@@ -9,7 +11,7 @@ pygame.display.set_caption("Torchless v" + __version__)
 
 
 def main() -> None:
-    screen = pygame.display.set_mode((1000, 600))
+    screen = pygame.display.set_mode(SCREEN_RESOLUTION)
     clock = pygame.time.Clock()
 
     manager = StateManager(screen)
@@ -19,7 +21,7 @@ def main() -> None:
     assert manager.current_state is not None
 
     while manager.is_running:
-        dt = clock.tick(60) / 1000
+        dt = clock.tick(FPS) / 1000
 
         for event in pygame.event.get():
             manager.current_state.process_event(event)
