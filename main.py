@@ -15,7 +15,7 @@ def main() -> None:
     clock = pygame.time.Clock()
 
     manager = StateManager(screen)
-    manager.connect_state_hook("states.grass_state")
+    manager.connect_state_hook("states.grass_state", clock=clock)
     manager.change_state("GrassState")
 
     assert manager.current_state is not None

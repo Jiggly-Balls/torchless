@@ -5,6 +5,7 @@ from typing import TYPE_CHECKING
 
 import pygame
 from game_state import State
+from game_state.utils import StateArgs
 
 from core.grass import GrassGroup, GrassSprite
 from core.utils import load_sprite_sheet
@@ -13,11 +14,14 @@ from data.constants import GRASS_SPACING, GRASS_SPRITE_SHEET
 if TYPE_CHECKING:
     from typing import Any
 
-    from pygame import Event, Surface, Vector2
+    from pygame import Clock, Event, Font, Surface, Vector2
 
 
 class GrassState(State):
-    def __init__(self) -> None:
+    def __init__(self, clock: Clock) -> None:
+        self.clock: Clock = clock
+        self.font: Font = pygame.font.SysFont("Arial", 24)
+
         self.grass_sprites: list[Surface] = load_sprite_sheet(
             GRASS_SPRITE_SHEET
         )
@@ -94,6 +98,11 @@ class GrassState(State):
         self.offset += self.direction * self.speed * dt
         # print(f"{self.offset}")
 
+    def handle_fps(self) -> None:
+        fps = self.clock.get_fps()
+        fps_text = self.font.render(f"FPS: {int(fps)}", False, (255, 255, 255))
+        self.window.blit(fps_text, (10, 10))
+
     def process_event(self, event: Event) -> None:
         if event.type == pygame.QUIT:
             self.manager.is_running = False
@@ -110,8 +119,12 @@ class GrassState(State):
 
         self.grass_group.draw(self.window, self.offset)
 
+        self.handle_fps()
+
         pygame.display.update()
 
 
-def hook() -> None:
-    GrassState.manager.load_states(GrassState)
+def hook(**kwargs: Any) -> None:
+    GrassState.manager.load_states(
+        GrassState, state_args=[StateArgs(state_name="GrassState", **kwargs)]
+    )
