@@ -9,6 +9,8 @@ from data.constants import TILE_SIZE
 if TYPE_CHECKING:
     from pygame import Surface
 
+__all__ = ("load_sprite_sheet",)
+
 
 def load_sprite_sheet(path: str) -> list[Surface]:
     sprite_sheet = pygame.image.load(path).convert_alpha()
