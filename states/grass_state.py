@@ -44,6 +44,12 @@ class GrassState(State):
                 )
             )
 
+            sorted_sprites = sorted(
+                self.grass_group.spritedict.items(),
+                key=lambda item: item[0].rect.y,
+            )
+            self.grass_group.spritedict = dict(sorted_sprites)
+
         self.grass_group.draw(self.window)
 
         pygame.display.update()
