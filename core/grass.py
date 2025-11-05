@@ -2,11 +2,12 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING
 
+from pygame.rect import Rect
 from pygame.sprite import Group, Sprite
 from pygame.surface import Surface
 
 if TYPE_CHECKING:
-    from pygame import Rect, Surface
+    from pygame import Rect, Surface, Vector2
 
 
 class GrassSprite(Sprite):
@@ -14,7 +15,7 @@ class GrassSprite(Sprite):
         self,
         group: Group[GrassSprite],
         image: Surface,
-        position: tuple[int, int],
+        position: Vector2,
     ) -> None:
         super().__init__(group)
         self.image: Surface = image
@@ -22,4 +23,8 @@ class GrassSprite(Sprite):
         self.rect.center = position
 
 
-class GrassGroup(Group[GrassSprite]): ...
+class GrassGroup(Group[GrassSprite]):
+    def draw(self, surface: Surface, offset: Vector2) -> None:  # pyright: ignore[reportIncompatibleMethodOverride]
+        surface.blits(
+            (spr.image, spr.rect.topleft + offset) for spr in self.sprites()
+        )
