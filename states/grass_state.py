@@ -40,7 +40,6 @@ class GrassState(State):
 
             # 3x3 brush
             all_vecs = [current_vec.copy() for _ in range(9)]
-
             all_vecs[1].x += GRASS_SPACING
             all_vecs[2].x += GRASS_SPACING * 2
             all_vecs[3].y += GRASS_SPACING

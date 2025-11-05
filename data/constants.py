@@ -6,6 +6,7 @@ __all__ = (
     "SCREEN_RESOLUTION",
     "BASE_ASSET_PATH",
     "GRASS_SPRITE_SHEET",
+    "GRASS_SPACING",
 )
 
 FPS: int = 60
