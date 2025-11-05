@@ -30,6 +30,11 @@ def load_sprite_sheet(path: str) -> list[Surface]:
             ),
         )
         surf.set_colorkey((0, 0, 0))
-        images.append(surf)
+        width, height = surf.get_size()
+
+        expanded_surf = pygame.transform.scale(
+            surf, (width * 1.5, height * 1.5)
+        )
+        images.append(expanded_surf)
 
     return images
