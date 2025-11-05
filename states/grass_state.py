@@ -13,7 +13,7 @@ from data.constants import GRASS_SPRITE_SHEET
 if TYPE_CHECKING:
     from typing import Any
 
-    from pygame import Event, Surface
+    from pygame import Event, Surface, Vector2
 
 
 class GrassState(State):
@@ -22,6 +22,7 @@ class GrassState(State):
             GRASS_SPRITE_SHEET
         )
         self.grass_group: GrassGroup = GrassGroup()
+        self.grass_vecs: list[Vector2] = []
 
     def process_event(self, event: Event) -> None:
         if event.type == pygame.QUIT:
@@ -36,19 +37,27 @@ class GrassState(State):
 
         mouse_button_state = pygame.mouse.get_pressed()
         if mouse_button_state[0]:
-            self.grass_group.add(
-                GrassSprite(
-                    self.grass_group,
-                    random.choice(self.grass_sprites),
-                    pygame.mouse.get_pos(),
-                )
-            )
+            mouse_pos = pygame.mouse.get_pos()
+            current_vec = pygame.Vector2(*mouse_pos)
 
-            sorted_sprites = sorted(
-                self.grass_group.spritedict.items(),
-                key=lambda item: item[0].rect.y,
-            )
-            self.grass_group.spritedict = dict(sorted_sprites)
+            if all(
+                (vec - current_vec).magnitude() > 10 for vec in self.grass_vecs
+            ):
+                print(len(self.grass_group.spritedict))
+                self.grass_group.add(
+                    GrassSprite(
+                        self.grass_group,
+                        random.choice(self.grass_sprites),
+                        mouse_pos,
+                    )
+                )
+                self.grass_vecs.append(current_vec)
+
+                sorted_sprites = sorted(
+                    self.grass_group.spritedict.items(),
+                    key=lambda item: item[0].rect.y,
+                )
+                self.grass_group.spritedict = dict(sorted_sprites)
 
         self.grass_group.draw(self.window)
 
