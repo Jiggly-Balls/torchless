@@ -14,3 +14,4 @@ SCREEN_RESOLUTION: tuple[int, int] = (1000, 600)
 
 BASE_ASSET_PATH = "assets/"
 GRASS_SPRITE_SHEET = BASE_ASSET_PATH + "grass.png"
+GRASS_SPACING: int = 9

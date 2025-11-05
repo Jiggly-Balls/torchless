@@ -8,7 +8,7 @@ from game_state import State
 
 from core.grass import GrassGroup, GrassSprite
 from core.utils import load_sprite_sheet
-from data.constants import GRASS_SPRITE_SHEET
+from data.constants import GRASS_SPACING, GRASS_SPRITE_SHEET
 
 if TYPE_CHECKING:
     from typing import Any
@@ -37,18 +37,18 @@ class GrassState(State):
             # 3x3 brush
             all_vecs = [current_vec.copy() for _ in range(9)]
 
-            all_vecs[1].x += 8
-            all_vecs[2].x += 17
-            all_vecs[3].y += 8
-            all_vecs[4].x += 8
-            all_vecs[4].y += 8
-            all_vecs[5].x += 17
-            all_vecs[5].y += 8
-            all_vecs[6].y += 17
-            all_vecs[7].x += 8
-            all_vecs[7].y += 17
-            all_vecs[8].x += 17
-            all_vecs[8].y += 17
+            all_vecs[1].x += GRASS_SPACING
+            all_vecs[2].x += GRASS_SPACING * 2
+            all_vecs[3].y += GRASS_SPACING
+            all_vecs[4].x += GRASS_SPACING
+            all_vecs[4].y += GRASS_SPACING
+            all_vecs[5].x += GRASS_SPACING * 2
+            all_vecs[5].y += GRASS_SPACING
+            all_vecs[6].y += GRASS_SPACING * 2
+            all_vecs[7].x += GRASS_SPACING
+            all_vecs[7].y += GRASS_SPACING * 2
+            all_vecs[8].x += GRASS_SPACING * 2
+            all_vecs[8].y += GRASS_SPACING * 2
 
             for vec in all_vecs:
                 if all(
