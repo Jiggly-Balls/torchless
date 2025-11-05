@@ -24,6 +24,76 @@ class GrassState(State):
         self.grass_group: GrassGroup = GrassGroup()
         self.grass_vecs: list[Vector2] = []
 
+        self.offset: Vector2 = pygame.Vector2()
+        self.direction: Vector2 = pygame.Vector2()
+        self.speed: int = 500
+
+    def handle_grass(self) -> None:
+        mouse_button_state = pygame.mouse.get_pressed()
+        if mouse_button_state[0]:
+            mouse_pos = pygame.mouse.get_pos()
+            current_vec = pygame.Vector2(*mouse_pos) - self.offset
+
+            # 3x3 brush
+            all_vecs = [current_vec.copy() for _ in range(9)]
+
+            all_vecs[1].x += 8
+            all_vecs[2].x += 17
+            all_vecs[3].y += 8
+            all_vecs[4].x += 8
+            all_vecs[4].y += 8
+            all_vecs[5].x += 17
+            all_vecs[5].y += 8
+            all_vecs[6].y += 17
+            all_vecs[7].x += 8
+            all_vecs[7].y += 17
+            all_vecs[8].x += 17
+            all_vecs[8].y += 17
+
+            for vec in all_vecs:
+                if all(
+                    (grass_vec - vec).magnitude() > 7
+                    for grass_vec in self.grass_vecs
+                ):
+                    print(len(self.grass_group.spritedict))
+                    self.grass_group.add(
+                        GrassSprite(
+                            self.grass_group,
+                            random.choice(self.grass_sprites),
+                            vec,
+                        )
+                    )
+                    self.grass_vecs.append(vec)
+
+                    sorted_sprites = sorted(
+                        self.grass_group.spritedict.items(),
+                        key=lambda item: item[0].rect.y,
+                    )
+                    self.grass_group.spritedict = dict(sorted_sprites)
+
+    def handle_movement(self, dt: float) -> None:
+        key_pressed = pygame.key.get_pressed()
+
+        if key_pressed[pygame.K_w]:
+            self.direction.y = 1
+        elif key_pressed[pygame.K_s]:
+            self.direction.y = -1
+        else:
+            self.direction.y = 0
+
+        if key_pressed[pygame.K_d]:
+            self.direction.x = -1
+        elif key_pressed[pygame.K_a]:
+            self.direction.x = 1
+        else:
+            self.direction.x = 0
+
+        if self.direction.magnitude() != 0.0:
+            self.direction.normalize_ip()
+
+        self.offset += self.direction * self.speed * dt
+        # print(f"{self.offset}")
+
     def process_event(self, event: Event) -> None:
         if event.type == pygame.QUIT:
             self.manager.is_running = False
@@ -35,31 +105,10 @@ class GrassState(State):
     def process_update(self, *args: Any) -> None:
         self.window.fill((50, 50, 50))
 
-        mouse_button_state = pygame.mouse.get_pressed()
-        if mouse_button_state[0]:
-            mouse_pos = pygame.mouse.get_pos()
-            current_vec = pygame.Vector2(*mouse_pos)
+        self.handle_movement(args[0])
+        self.handle_grass()
 
-            if all(
-                (vec - current_vec).magnitude() > 10 for vec in self.grass_vecs
-            ):
-                print(len(self.grass_group.spritedict))
-                self.grass_group.add(
-                    GrassSprite(
-                        self.grass_group,
-                        random.choice(self.grass_sprites),
-                        mouse_pos,
-                    )
-                )
-                self.grass_vecs.append(current_vec)
-
-                sorted_sprites = sorted(
-                    self.grass_group.spritedict.items(),
-                    key=lambda item: item[0].rect.y,
-                )
-                self.grass_group.spritedict = dict(sorted_sprites)
-
-        self.grass_group.draw(self.window)
+        self.grass_group.draw(self.window, self.offset)
 
         pygame.display.update()
 
