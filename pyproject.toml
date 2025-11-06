@@ -42,4 +42,3 @@ reportMissingTypeStubs = false
 reportAny = false
 reportExplicitAny = false
 reportImplicitOverride = false
-reportDeprecated = false
