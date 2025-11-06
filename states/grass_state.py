@@ -55,7 +55,7 @@ class GrassState(State):
 
             for vec in all_vecs:
                 if all(
-                    (grass_vec - vec).magnitude() > 7
+                    (grass_vec - vec).magnitude() > GRASS_SPACING
                     for grass_vec in self.grass_vecs
                 ):
                     print(len(self.grass_group.spritedict))
